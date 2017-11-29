@@ -1,0 +1,564 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context="innocenti.luca.com.myapplication.ScrollingActivity"
+        tools:showIn="@layout/activity_scrolling">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- Inizio parametri-->
+            <EditText
+                android:id="@+id/editgeology"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:ems="15"
+                android:focusable="false"
+                android:inputType="none"
+                android:paddingBottom="10dp"
+                android:text="1) Geology"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                 />
+
+            <EditText
+                android:id="@+id/editg112"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editgeology"
+                android:focusable="false"
+                android:inputType="none"
+                android:background="@android:color/transparent"
+                android:text="Depth of weathering" />
+
+            <Spinner
+                android:id="@+id/spinner_g112"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editg112"
+                android:entries="@array/g112"/>
+
+
+            <EditText
+                android:id="@+id/editg122"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spinner_g112"
+                android:focusable="false"
+                android:inputType="none"
+                android:background="@android:color/transparent"
+                android:text="Discontinuities" />
+
+            <Spinner
+                android:id="@+id/spinner_g122"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editg122"
+                android:entries="@array/g122"/>
+
+            <EditText
+                android:id="@+id/editg132"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spinner_g122"
+                android:focusable="false"
+                android:inputType="none"
+                android:background="@android:color/transparent"
+                android:text="Direction of discontinuities" />
+
+            <Spinner
+                android:id="@+id/spinner_g132"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editg132"
+                android:entries="@array/g132"/>
+
+            <EditText
+                android:id="@+id/editg142"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spinner_g132"
+                android:focusable="false"
+                android:inputType="none"
+                android:background="@android:color/transparent"
+                android:text="Dipping structure/Bedding" />
+
+            <Spinner
+                android:id="@+id/spinner_g142"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editg142"
+                android:entries="@array/g142"/>
+
+
+            <EditText
+                android:id="@+id/editg142"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spinner_g132"
+                android:focusable="false"
+                android:inputType="none"
+                android:background="@android:color/transparent"
+                android:text="Dipping structure/Bedding" />
+
+            <Spinner
+                android:id="@+id/spinner_g142"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editg142"
+                android:entries="@array/g142"/>
+
+
+            <EditText
+                android:id="@+id/editg152"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spinner_g142"
+                android:focusable="false"
+                android:inputType="none"
+                android:background="@android:color/transparent"
+                android:text="Clay material in bedding" />
+
+            <Spinner
+                android:id="@+id/spinner_g152"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editg152"
+                android:entries="@array/g152"/>
+
+            <EditText
+                android:id="@+id/editg162"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spinner_g152"
+                android:focusable="false"
+                android:inputType="none"
+                android:background="@android:color/transparent"
+                android:text="Length in structure" />
+
+            <Spinner
+                android:id="@+id/spinner_g162"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editg162"
+                android:entries="@array/g162"/>
+
+            <EditText
+                android:id="@+id/editg172"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spinner_g162"
+                android:focusable="false"
+                android:inputType="none"
+                android:background="@android:color/transparent"
+                android:text="Presence of floor rools and dipping seam" />
+
+            <Spinner
+                android:id="@+id/spinner_g172"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editg172"
+                android:entries="@array/g172"/>
+
+            <EditText
+                android:id="@+id/editg182"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spinner_g172"
+                android:focusable="false"
+                android:inputType="none"
+                android:background="@android:color/transparent"
+                android:text="Mayor dykes/faults/burnt coal" />
+
+            <Spinner
+                android:id="@+id/spinner_g182"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editg182"
+                android:entries="@array/g182"/>
+
+            <EditText
+                android:id="@+id/editg192"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spinner_g182"
+                android:focusable="false"
+                android:inputType="none"
+                android:background="@android:color/transparent"
+                android:text="Cracks on highwall/benches within 10 m of crest" />
+
+            <Spinner
+                android:id="@+id/spinner_g192"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editg192"
+                android:entries="@array/g192"/>
+
+
+            <EditText
+                android:id="@+id/editg202"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spinner_g192"
+                android:focusable="false"
+                android:inputType="none"
+                android:background="@android:color/transparent"
+                android:text="Highwall condition" />
+
+            <Spinner
+                android:id="@+id/spinner_g202"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editg202"
+                android:entries="@array/g1102"/>
+
+            <!-- Inizio parametri-->
+            <EditText
+                android:id="@+id/editwater"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:ems="15"
+                android:focusable="false"
+                android:inputType="none"
+                android:paddingBottom="10dp"
+                android:text="2) Water"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spinner_g202"
+
+                />
+
+            <EditText
+                android:id="@+id/editw21"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editwater"
+                android:focusable="false"
+                android:inputType="none"
+                android:background="@android:color/transparent"
+                android:text="Water coming out of face bedding or structure" />
+
+            <Spinner
+                android:id="@+id/spinner_w21"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editw21"
+                android:entries="@array/w21"/>
+
+            <EditText
+                android:id="@+id/editw22"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spinner_w21"
+                android:focusable="false"
+                android:inputType="none"
+                android:background="@android:color/transparent"
+                android:text="Is there water accuulation at toe of slope" />
+
+            <Spinner
+                android:id="@+id/spinner_w22"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editw22"
+                android:entries="@array/w22"/>
+
+            <EditText
+                android:id="@+id/editw23"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spinner_w22"
+                android:focusable="false"
+                android:inputType="none"
+                android:background="@android:color/transparent"
+                android:text="Is there water on the top of highwall benches within 30m of crest" />
+
+            <Spinner
+                android:id="@+id/spinner_w23"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editw23"
+                android:entries="@array/w23"/>
+
+
+            <EditText
+                android:id="@+id/editw24"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spinner_w23"
+                android:focusable="false"
+                android:inputType="none"
+                android:background="@android:color/transparent"
+                android:text="Rain" />
+
+            <Spinner
+                android:id="@+id/spinner_w24"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editw24"
+                android:entries="@array/w24"/>
+
+            <EditText
+                android:id="@+id/editw25"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spinner_w24"
+                android:focusable="false"
+                android:inputType="none"
+                android:background="@android:color/transparent"
+                android:text="Haed of water" />
+
+            <Spinner
+                android:id="@+id/spinner_w25"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editw25"
+                android:entries="@array/w25"/>
+
+
+            <!-- Inizio parametri-->
+            <EditText
+                android:id="@+id/editsponcom"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:ems="15"
+                android:focusable="false"
+                android:inputType="none"
+                android:paddingBottom="10dp"
+                android:text="3) Sponcom"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spinner_w25"
+
+                />
+
+
+            <EditText
+                android:id="@+id/edits31"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editsponcom"
+                android:focusable="false"
+                android:inputType="none"
+                android:background="@android:color/transparent"
+                android:text="Is the toe of highwall burning" />
+
+            <Spinner
+                android:id="@+id/spinner_s31"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edits31"
+                android:entries="@array/s31"/>
+
+            <EditText
+                android:id="@+id/edits32"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spinner_s31"
+                android:focusable="false"
+                android:inputType="none"
+                android:background="@android:color/transparent"
+                android:text="Is the toe of lowwall/spoil or any burning" />
+
+            <Spinner
+                android:id="@+id/spinner_s32"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edits32"
+                android:entries="@array/s32"/>
+
+            <!-- Inizio parametri-->
+            <EditText
+                android:id="@+id/editdragline"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:ems="15"
+                android:focusable="false"
+                android:inputType="none"
+                android:paddingBottom="10dp"
+                android:text="4) Dragline"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spinner_s32" />
+
+
+            <EditText
+                android:id="@+id/editd41"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editdragline"
+                android:focusable="false"
+                android:inputType="none"
+                android:background="@android:color/transparent"
+                android:text="Dragline bench built on" />
+
+            <Spinner
+                android:id="@+id/spinner_d41"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editd41"
+                android:entries="@array/d41"/>
+
+            <!-- Gauge -->
+
+            <com.github.anastr.speedviewlib.SpeedView
+                android:id="@+id/speedView"
+                app:sv_startDegree="0"
+                app:sv_endDegree="180"
+                app:layout_constraintTop_toBottomOf="@+id/spinner_d41"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:paddingBottom="20dp"
+                android:paddingTop="20dp"
+
+                />
+
+        </android.support.constraint.ConstraintLayout>
+</android.support.v4.widget.NestedScrollView>
+

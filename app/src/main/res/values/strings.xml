@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">OpenRisk</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="tab_text_1">Mining Risk</string>
+    <string name="tab_text_2">Geotechnical Risk</string>
+    <string name="tab_text_3">Photos</string>
+    <string name="tab_text_4">Overall Risk</string>
+
+    <string name="section_format">Hello World from section: %1$d</string>
+</resources>
