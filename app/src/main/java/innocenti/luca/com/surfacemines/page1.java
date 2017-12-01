@@ -1,10 +1,15 @@
 package innocenti.luca.com.surfacemines;
 
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -30,7 +35,7 @@ import innocenti.luca.com.surfacemines.variabili;
 
 
 
-public class page1 extends Fragment {
+public class page1 extends Fragment implements LocationListener{
 
     private ScrollView scrolla;
     private int scattato;
@@ -100,17 +105,29 @@ public class page1 extends Fragment {
     private View rootView;
     private SpeedView speedometer;
     private EditText stoptxt;
+    private double lat;
+    private double lng;
+    private EditText coordinatetxt;
+    private LocationManager locationManager ;
+    private Location location;
 
 
+    @SuppressLint("MissingPermission")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.page1, container, false);
-        Log.d("OpenRisk","Page 1 create");
-
+        int openRisk = Log.d("OpenRisk", "Page 1 create");
+        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,2000,2,this);
 
 
 
         return rootView;
+    }
+
+
+
+    private void getSystemService(String locationService) {
     }
 
     public void onViewCreated(View rootView, Bundle savedInstanceState) {
@@ -124,6 +141,7 @@ public class page1 extends Fragment {
         rischio = (EditText) rootView.findViewById(R.id.editrisk);
         locationtxt = (EditText) rootView.findViewById(R.id.editmine);
         stoptxt = (EditText) rootView.findViewById(R.id.editstop);
+        coordinatetxt = (EditText) rootView.findViewById(R.id.edits3);
 
 
         scrolla = (ScrollView) v.findViewById(R.id.scroller);
@@ -173,6 +191,23 @@ public class page1 extends Fragment {
 
 
                 Log.d("Photonotation", locationtxt.getText().toString());
+            }
+        });
+
+        stoptxt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                salva_location();
             }
         });
 
@@ -783,6 +818,8 @@ public class page1 extends Fragment {
         editor.putInt("B32", b32_index);
         editor.putInt("B33", b33_index);
         editor.putInt("B34", b34_index);
+        editor.putString("LAT",Double.toString(lat));
+        editor.putString("LNG",Double.toString(lng));
 
 
         //editor.commit();
@@ -870,6 +907,33 @@ public class page1 extends Fragment {
 
         scrolla.fullScroll(ScrollView.FOCUS_UP);
 
+
+    }
+
+
+
+    @Override
+    public void onLocationChanged(Location location) {
+        lat = location.getLatitude();
+        lng = location.getLongitude();
+        coordinatetxt.setText("A "+Double.toString(lng)+"/"+Double.toString(lat));
+
+        Log.i("Location info: Lat", Double.toString(lat));
+        Log.i("Location info: Lng", Double.toString(lng));
+    }
+
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String s) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {
 
     }
 }

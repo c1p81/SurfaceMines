@@ -73,6 +73,19 @@
                 android:inputType="textMultiLine|textNoSuggestions"
                 tools:layout_editor_absoluteX="85dp" />
 
+            <EditText
+                android:id="@+id/edits3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editstop"
+                android:focusable="false"
+                android:inputType="none"
+                android:background="@android:color/transparent"
+                android:gravity="center_horizontal"
+                android:text="0.0/0.0" />
 
             <!-- Inizio parametri-->
             <EditText
@@ -88,7 +101,7 @@
                 android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editstop" />
+                app:layout_constraintTop_toBottomOf="@+id/edits3" />
 
 
             <EditText

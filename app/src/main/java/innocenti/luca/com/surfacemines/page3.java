@@ -5,7 +5,9 @@ package innocenti.luca.com.surfacemines;
  */
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Environment;
@@ -24,6 +26,7 @@ import java.util.Date;
 
 import innocenti.luca.com.surfacemines.variabili;
 
+import static android.content.Context.MODE_PRIVATE;
 import static java.lang.System.out;
 
 public class page3 extends Fragment {
@@ -53,6 +56,8 @@ public class page3 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.page3, container, false);
+
+
         return rootView;
     }
 
@@ -62,6 +67,43 @@ public class page3 extends Fragment {
         foto1 = (ImageView) v.findViewById(R.id.imageView);
         foto2 = (ImageView) v.findViewById(R.id.imageView2);
         foto3 = (ImageView) v.findViewById(R.id.imageView3);
+
+
+        SharedPreferences prefs = this.getActivity().getSharedPreferences("variabili", MODE_PRIVATE);
+        int modifica = prefs.getInt("Modifica",0);
+        String mine = prefs.getString("Mine", "");
+        String stop = prefs.getString("Stop", "");
+
+        card = Environment.getExternalStorageDirectory();
+        File file = new File(Environment.getExternalStorageDirectory().getPath(), "OpenRisk");
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        //String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String percorso = file.getAbsolutePath() + "/" + mine + "_" + stop;
+
+        if (modifica == 1)
+        {
+            File img1 = new File(percorso+"_1.jpg");
+            if (img1.exists())
+            {
+                Bitmap img1bmp = BitmapFactory.decodeFile(img1.getAbsolutePath());
+                foto1.setImageBitmap(img1bmp);
+            }
+            File img2 = new File(percorso+"_2.jpg");
+            if (img2.exists())
+            {
+                Bitmap img2bmp = BitmapFactory.decodeFile(img2.getAbsolutePath());
+                foto2.setImageBitmap(img2bmp);
+            }
+            File img3 = new File(percorso+"_3.jpg");
+            if (img3.exists())
+            {
+                Bitmap img3bmp = BitmapFactory.decodeFile(img3.getAbsolutePath());
+                foto3.setImageBitmap(img3bmp);
+            }
+
+        }
 
 
         //ff1 = get_foto1();
@@ -103,13 +145,20 @@ public class page3 extends Fragment {
     public void onActivityResult(int requestCode,int resultCode, Intent data)
     {
 
+
+        SharedPreferences prefs = this.getActivity().getSharedPreferences("variabili", MODE_PRIVATE);
+
+        String mine = prefs.getString("Mine", "");
+        String stop = prefs.getString("Stop", "");
+
+
         card = Environment.getExternalStorageDirectory();
         File file = new File(Environment.getExternalStorageDirectory().getPath(), "OpenRisk");
         if (!file.exists()) {
             file.mkdirs();
         }
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String percorso = file.getAbsolutePath() + "/" + timeStamp;
+        //String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String percorso = file.getAbsolutePath() + "/" + mine + "_" + stop;
         String uriStringjpeg = percorso;
 
         if (requestCode== CAMERA_REQUEST1 && resultCode == Activity.RESULT_OK){
@@ -119,8 +168,8 @@ public class page3 extends Fragment {
             bm1=((BitmapDrawable)foto1.getDrawable()).getBitmap();
             FileOutputStream out1 = null;
             try {
-                out1 = new FileOutputStream(uriStringjpeg + "_1"+".jpg");
-                bm1.compress(Bitmap.CompressFormat.JPEG, 100, out); // bmp is your Bitmap instance
+                out1 = new FileOutputStream(uriStringjpeg + "_1"+".png");
+                bm1.compress(Bitmap.CompressFormat.PNG, 100, out1); // bmp is your Bitmap instance
                 // PNG is a lossless format, the compression factor (100) is ignored
             } catch (Exception e) {
                 e.printStackTrace();
@@ -140,6 +189,24 @@ public class page3 extends Fragment {
             foto2.setImageBitmap(ff2);
             foto2.setImageURI(data.getData());
             bm2=((BitmapDrawable)foto2.getDrawable()).getBitmap();
+            FileOutputStream out2 = null;
+            try {
+                out2 = new FileOutputStream(uriStringjpeg + "_2"+".jpg");
+                bm2.compress(Bitmap.CompressFormat.JPEG, 100, out2); // bmp is your Bitmap instance
+                // PNG is a lossless format, the compression factor (100) is ignored
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (out2 != null) {
+                        out2.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
         }
 
         if (requestCode== CAMERA_REQUEST3 && resultCode == Activity.RESULT_OK){
@@ -147,6 +214,22 @@ public class page3 extends Fragment {
             foto3.setImageBitmap(ff3);
             foto3.setImageURI(data.getData());
             bm3=((BitmapDrawable)foto1.getDrawable()).getBitmap();
+            FileOutputStream out3 = null;
+            try {
+                out3 = new FileOutputStream(uriStringjpeg + "_3"+".jpg");
+                bm3.compress(Bitmap.CompressFormat.JPEG, 100, out3); // bmp is your Bitmap instance
+                // PNG is a lossless format, the compression factor (100) is ignored
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (out3 != null) {
+                        out3.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

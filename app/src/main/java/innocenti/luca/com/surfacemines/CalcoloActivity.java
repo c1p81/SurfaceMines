@@ -1,6 +1,7 @@
 package innocenti.luca.com.surfacemines;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Environment;
 import android.support.design.widget.TabLayout;
@@ -55,6 +56,7 @@ public class CalcoloActivity extends AppCompatActivity {
     private JsonWriter writer;
     private File card;
     private FileOutputStream out;
+    private Object v;
 
 
     @Override
@@ -92,11 +94,55 @@ public class CalcoloActivity extends AppCompatActivity {
 
 
                 int g11 = prefs.getInt("G11",0);
+                int g12 = prefs.getInt("G12",0);
+                int g13 = prefs.getInt("G13",0);
+                int g14 = prefs.getInt("G14",0);
+                int g15 = prefs.getInt("G15",0);
+                int g16 = prefs.getInt("G16",0);
+                int g17 = prefs.getInt("G17",0);
+                int g18 = prefs.getInt("G18",0);
+                int g19 = prefs.getInt("G19",0);
+
+                int m21 = prefs.getInt("M21",0);
+                int m22 = prefs.getInt("M22",0);
+                int m23 = prefs.getInt("M23",0);
+                int m24 = prefs.getInt("M24",0);
+
+                int b31 = prefs.getInt("B31",0);
+                int b32 = prefs.getInt("B32",0);
+                int b33 = prefs.getInt("B33",0);
+                int b34 = prefs.getInt("B34",0);
+
+                int g112 = prefs.getInt("G112",0);
+                int g122 = prefs.getInt("G122",0);
+                int g132 = prefs.getInt("G132",0);
+                int g142 = prefs.getInt("G142",0);
+                int g152 = prefs.getInt("G152",0);
+                int g162 = prefs.getInt("G162",0);
+                int g172 = prefs.getInt("G172",0);
+                int g182 = prefs.getInt("G182",0);
+                int g192 = prefs.getInt("G192",0);
+                int g202 = prefs.getInt("G202",0);
+
+                int w21 = prefs.getInt("W21",0);
+                int w22 = prefs.getInt("W22",0);
+                int w23 = prefs.getInt("W23",0);
+                int w24 = prefs.getInt("W24",0);
+
+                int s31 = prefs.getInt("S31",0);
+                int s32 = prefs.getInt("S32",0);
+
+                int d41 = prefs.getInt("D41",0);
+
 
                 String mine = prefs.getString("Mine", "");
                 String stop = prefs.getString("Stop", "");
 
-                Log.d("Photonotation", stop);
+                String lat = prefs.getString("LAT","0.0");
+                String lng = prefs.getString("LNG","0.0");
+
+
+                Log.d("Photonotation", mine);
 
                 //INIZIA LA SCRITTURA DEL JSON
                 card = Environment.getExternalStorageDirectory();
@@ -105,7 +151,7 @@ public class CalcoloActivity extends AppCompatActivity {
                     file.mkdirs();
                 }
                 String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-                String percorso = file.getAbsolutePath() + "/" + timeStamp;
+                String percorso = file.getAbsolutePath() + "/" + mine + "_" + stop;
                 String uriStringjson = percorso + ".json";
                 //String uriStringjpeg = percorso + ".jpg";
                 try {
@@ -125,8 +171,13 @@ public class CalcoloActivity extends AppCompatActivity {
                 }
                 try {
 
+                    writer.name("ALT").value(lat);
+                    writer.name("LNG").value(lng);
+                    writer.name("DATETIME").value(timeStamp);
+
+
                     writer.name("G11").value(Integer.toString(g11));
-                    /*writer.name("G12").value(Integer.toString(g12));
+                    writer.name("G12").value(Integer.toString(g12));
                     writer.name("G13").value(Integer.toString(g13));
                     writer.name("G14").value(Integer.toString(g14));
                     writer.name("G15").value(Integer.toString(g15));
@@ -141,7 +192,28 @@ public class CalcoloActivity extends AppCompatActivity {
                     writer.name("B31").value(Integer.toString(b31));
                     writer.name("B32").value(Integer.toString(b32));
                     writer.name("B33").value(Integer.toString(b33));
-                    writer.name("B34").value(Integer.toString(b34));*/
+                    writer.name("B34").value(Integer.toString(b34));
+
+                    writer.name("G112").value(Integer.toString(g112));
+                    writer.name("G122").value(Integer.toString(g122));
+                    writer.name("G132").value(Integer.toString(g132));
+                    writer.name("G142").value(Integer.toString(g142));
+                    writer.name("G152").value(Integer.toString(g152));
+                    writer.name("G162").value(Integer.toString(g162));
+                    writer.name("G172").value(Integer.toString(g172));
+                    writer.name("G182").value(Integer.toString(g182));
+                    writer.name("G192").value(Integer.toString(g192));
+                    writer.name("G202").value(Integer.toString(g202));
+
+                    writer.name("W21").value(Integer.toString(w21));
+                    writer.name("W22").value(Integer.toString(w22));
+                    writer.name("W23").value(Integer.toString(w23));
+                    writer.name("W24").value(Integer.toString(w24));
+
+                    writer.name("S31").value(Integer.toString(s31));
+                    writer.name("S32").value(Integer.toString(s32));
+
+                    writer.name("D41").value(Integer.toString(d41));
 
 
                 } catch (IOException e) {
@@ -160,6 +232,10 @@ public class CalcoloActivity extends AppCompatActivity {
                 }
 
                 Snackbar.make(view, "Saving data", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+
+
+                startActivity(new Intent(CalcoloActivity.this, MainActivity.class));
+
             }
         });
 
@@ -182,6 +258,12 @@ public class CalcoloActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }
+
+        if (id == R.id.action_map) {
+            Intent mappa = new Intent(CalcoloActivity.this,MapsActivity.class);
+            startActivity(mappa);
             return true;
         }
 
