@@ -34,4 +34,12 @@
         android:scaleType="center"
         app:srcCompat="@android:drawable/ic_menu_add" />
 
+    <ProgressBar
+        android:id="@+id/progressBar1"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_centerHorizontal="true" />
+
 </android.support.design.widget.CoordinatorLayout>

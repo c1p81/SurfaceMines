@@ -84,19 +84,19 @@ public class page3 extends Fragment {
 
         if (modifica == 1)
         {
-            File img1 = new File(percorso+"_1.jpg");
+            File img1 = new File(percorso+"_1.png");
             if (img1.exists())
             {
                 Bitmap img1bmp = BitmapFactory.decodeFile(img1.getAbsolutePath());
                 foto1.setImageBitmap(img1bmp);
             }
-            File img2 = new File(percorso+"_2.jpg");
+            File img2 = new File(percorso+"_2.png");
             if (img2.exists())
             {
                 Bitmap img2bmp = BitmapFactory.decodeFile(img2.getAbsolutePath());
                 foto2.setImageBitmap(img2bmp);
             }
-            File img3 = new File(percorso+"_3.jpg");
+            File img3 = new File(percorso+"_3.png");
             if (img3.exists())
             {
                 Bitmap img3bmp = BitmapFactory.decodeFile(img3.getAbsolutePath());
@@ -191,8 +191,8 @@ public class page3 extends Fragment {
             bm2=((BitmapDrawable)foto2.getDrawable()).getBitmap();
             FileOutputStream out2 = null;
             try {
-                out2 = new FileOutputStream(uriStringjpeg + "_2"+".jpg");
-                bm2.compress(Bitmap.CompressFormat.JPEG, 100, out2); // bmp is your Bitmap instance
+                out2 = new FileOutputStream(uriStringjpeg + "_2"+".png");
+                bm2.compress(Bitmap.CompressFormat.PNG, 100, out2); // bmp is your Bitmap instance
                 // PNG is a lossless format, the compression factor (100) is ignored
             } catch (Exception e) {
                 e.printStackTrace();
@@ -216,8 +216,8 @@ public class page3 extends Fragment {
             bm3=((BitmapDrawable)foto1.getDrawable()).getBitmap();
             FileOutputStream out3 = null;
             try {
-                out3 = new FileOutputStream(uriStringjpeg + "_3"+".jpg");
-                bm3.compress(Bitmap.CompressFormat.JPEG, 100, out3); // bmp is your Bitmap instance
+                out3 = new FileOutputStream(uriStringjpeg + "_3"+".png");
+                bm3.compress(Bitmap.CompressFormat.PNG, 100, out3); // bmp is your Bitmap instance
                 // PNG is a lossless format, the compression factor (100) is ignored
             } catch (Exception e) {
                 e.printStackTrace();

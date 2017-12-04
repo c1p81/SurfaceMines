@@ -113,7 +113,7 @@ public class page2 extends Fragment {
         speedometer.setUnit(" ");
         speedometer.setUnitTextColor(Color.WHITE);
         speedometer.setSpeedTextColor(Color.WHITE);
-        speedometer.setSpeedAt(20);
+        speedometer.setSpeedAt(50);
 
         g112.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

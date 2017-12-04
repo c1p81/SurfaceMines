@@ -170,10 +170,12 @@ public class CalcoloActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 try {
-
-                    writer.name("ALT").value(lat);
+                    writer.name("MINE").value(mine);
+                    writer.name("STOP").value(stop);
+                    writer.name("LAT").value(lat);
                     writer.name("LNG").value(lng);
                     writer.name("DATETIME").value(timeStamp);
+
 
 
                     writer.name("G11").value(Integer.toString(g11));

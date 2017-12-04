@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,11 +12,14 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
+import android.provider.SyncStateContract;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -25,18 +29,31 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
+import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.ColumnText;
+import com.itextpdf.text.pdf.PdfAnnotation;
+import com.itextpdf.text.pdf.PdfArray;
+import com.itextpdf.text.pdf.PdfBorderArray;
 import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfDestination;
+import com.itextpdf.text.pdf.PdfDictionary;
 import com.itextpdf.text.pdf.PdfImportedPage;
+import com.itextpdf.text.pdf.PdfName;
 import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfStamper;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.vistrav.ask.Ask;
 import com.vistrav.ask.annotations.AskDenied;
@@ -57,6 +74,7 @@ import java.lang.reflect.Method;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -79,12 +97,19 @@ public class MainActivity extends ListActivity {
     private File file_jpg_1;
     private File file_jpg_2;
     private File file_jpg_3;
+    private File card;
+    private String mine,stop,datetime,latj,lngj;
+    private ProgressBar spinner;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        spinner = (ProgressBar)findViewById(R.id.progressBar1);
+        spinner.setVisibility(View.GONE);
+
 
         Ask.on(this)
                 .id(11)
@@ -154,7 +179,25 @@ public class MainActivity extends ListActivity {
                 if (file.endsWith(".json"))
                 {
                     conta = conta + 1;
-                    values.add(file);
+
+                    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/YYYY HH:mm");
+
+                    card = Environment.getExternalStorageDirectory();
+                    File f = new File(Environment.getExternalStorageDirectory().getPath(), "OpenRisk");
+
+                    String percorso = f.getAbsolutePath() + "/" + file;
+
+                    File mm = new File(percorso);
+                    Log.d("OpenRisk Ora" , mm.toString() );
+
+                    String modifica = sdf.format(mm.lastModified());
+
+                    String mostra =file.substring(0,file.lastIndexOf('.'));
+                    mostra = mostra.toUpperCase();
+                    mostra = mostra.replaceAll("_","   ");
+                    mostra = mostra + "\n" + modifica;
+                    values.add(mostra);
+                    Log.d("OpenRisk",file);
                 }
             }
         }
@@ -171,6 +214,15 @@ public class MainActivity extends ListActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
                 filename = (String) getListAdapter().getItem(position);
+                filename = filename.toLowerCase();
+                filename = filename.replaceAll("   ","_");
+                filename =filename.substring(0,filename.lastIndexOf('\n'));
+
+                filename = filename + ".json";
+                Log.d("OpenRisk", "Luca "+ filename.toString());
+
+
+
                 variabili var = new variabili();
                 var.set_sito(filename);
                 // questo e' per passare la variabile alle altre activity
@@ -198,15 +250,8 @@ public class MainActivity extends ListActivity {
     @Override
     public boolean onContextItemSelected(MenuItem item){
         if(item.getTitle()=="Report"){
-            try {
-                try {
-                    report();
-                } catch (DocumentException e) {
-                    e.printStackTrace();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            new MyTask().execute(1);
+
         }
         else if(item.getTitle()=="Delete"){
             cancella();
@@ -266,6 +311,8 @@ public class MainActivity extends ListActivity {
         String percorso2 = file.getAbsolutePath() + "/" +filename;
         String uriStringjson = percorso2 ;
 
+        spinner.setVisibility(View.VISIBLE);
+
 
 
         // LEGGE IL JSON
@@ -302,13 +349,14 @@ public class MainActivity extends ListActivity {
             e.printStackTrace();
         }
         try {
-            int g11 = jObject.getInt("G11");
-            int g12 = jObject.getInt("G12");
-            int g13 = jObject.getInt("G13");
-            int g14 = jObject.getInt("G14");
-            int g15 = jObject.getInt("G15");
+            mine = jObject.getString("MINE");
+            stop = jObject.getString("STOP");
+            datetime = jObject.getString("DATETIME");
+            latj = jObject.getString("LAT");
+            lngj = jObject.getString("LNG");
 
-            Log.d("OpenRisk","G11 : " + Integer.toString(g11));
+
+            //Log.d("OpenRisk","G11 : " + Integer.toString(g11));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -337,32 +385,100 @@ public class MainActivity extends ListActivity {
         cb.addTemplate(page, 0, 0);
 
 
-        /*document.add(new Paragraph("Luca"));
+        // AGGIUNGI LE IMMAGINI
 
-        BaseFont bf = BaseFont.createFont(BaseFont.COURIER, BaseFont.CP1257, BaseFont.EMBEDDED);
-        cb.saveState();
-        cb.beginText();
-        cb.moveText(100, 100);
-        cb.setFontAndSize(bf, 12);
-        cb.showText("Luca");
-        cb.endText();
-        cb.restoreState();*/
+        // DIMENSIONI DI UN FOGLIO A4 595 x 842
+
 
         String path_img1 = pdfFolder.getAbsolutePath() + "/" + filename.substring(0,filename.lastIndexOf('.'))+ "_1.png";
-        Log.d("OpenRisk", "Pdf img1 " + path_img1);
-        ///storage/emulated/0/OpenRisk/computer_mac_1.jpg
-        InputStream inputStream = new BufferedInputStream(new FileInputStream(path_img1));
+        String path_img2 = pdfFolder.getAbsolutePath() + "/" + filename.substring(0,filename.lastIndexOf('.'))+ "_2.png";
+        String path_img3 = pdfFolder.getAbsolutePath() + "/" + filename.substring(0,filename.lastIndexOf('.'))+ "_3.png";
 
-        Bitmap img1bmp = BitmapFactory.decodeStream(inputStream);
+        Log.d("OpenRisk","Pdf IMG1 Report  "+ path_img1);
 
-        ByteArrayOutputStream stream1 = new ByteArrayOutputStream();
 
-        img1bmp.compress(Bitmap.CompressFormat.PNG,100,stream1);
+        PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(pdfFolder.getAbsolutePath() + "/" + filename.substring(0,filename.lastIndexOf('.'))+"a.pdf"));
+        stamper.setRotateContents(false);
+        PdfContentByte content = stamper.getOverContent(1);
 
-        Image image = Image.getInstance(stream1.toByteArray());
-        image.scaleToFit(100f,100f);
-        image.setAbsolutePosition(10f,10f);
-        document.add(image);
+        File f = new File(path_img1);
+        if (f.exists()) {
+            Bitmap bmp = BitmapFactory.decodeFile(f.getAbsolutePath());
+            ByteArrayOutputStream stream3 = new ByteArrayOutputStream();
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, stream3);
+            Image img1 = Image.getInstance(stream3.toByteArray());
+            //img1.scaleAbsoluteHeight(100);
+            //img1.scaleAbsoluteWidth(100);
+            img1.scalePercent(50);
+            img1.setAbsolutePosition(50, 20);
+            content.addImage(img1);
+        }
+
+        File f2 = new File(path_img2);
+        if (f2.exists()) {
+            Bitmap bmp2 = BitmapFactory.decodeFile(f2.getAbsolutePath());
+            ByteArrayOutputStream stream4 = new ByteArrayOutputStream();
+            bmp2.compress(Bitmap.CompressFormat.PNG, 100, stream4);
+            Image img2 = Image.getInstance(stream4.toByteArray());
+            //img2.scaleAbsoluteHeight(100);
+            //img2.scaleAbsoluteWidth(100);
+            img2.scalePercent(50);
+            img2.setAbsolutePosition(250, 20);
+            content.addImage(img2);
+
+        }
+
+
+        File f3 = new File(path_img3);
+        if (f3.exists()) {
+            Bitmap bmp3 = BitmapFactory.decodeFile(f3.getAbsolutePath());
+            ByteArrayOutputStream stream5 = new ByteArrayOutputStream();
+            bmp3.compress(Bitmap.CompressFormat.PNG, 100, stream5);
+            Image img3 = Image.getInstance(stream5.toByteArray());
+            //img3.scaleAbsoluteHeight(100);
+            //img3.scaleAbsoluteWidth(100);
+            img3.scalePercent(50);
+            img3.setAbsolutePosition(450, 20);
+            content.addImage(img3);
+        }
+
+        Bitmap mappa = BitmapFactory.decodeResource(getBaseContext().getResources(),R.drawable.mappa);
+        ByteArrayOutputStream stream7 = new ByteArrayOutputStream();
+
+        mappa.compress(Bitmap.CompressFormat.PNG,100,stream7);
+        Image map = Image.getInstance(stream7.toByteArray());
+        //ind.scaleAbsoluteHeight(70);
+        //ind.scaleAbsoluteWidth(100);
+        map.scalePercent(10);
+        map.setAbsolutePosition(150, 170);
+        content.addImage(map);
+
+        Bitmap indicatore = BitmapFactory.decodeResource(getBaseContext().getResources(),R.drawable.indicatore_verde);
+        ByteArrayOutputStream stream6 = new ByteArrayOutputStream();
+
+        indicatore.compress(Bitmap.CompressFormat.PNG,100,stream6);
+        Image ind = Image.getInstance(stream6.toByteArray());
+        ind.scalePercent(9,9);
+        //ind.scaleAbsoluteHeight(70);
+        //ind.scaleAbsoluteWidth(100);
+        ind.setAbsolutePosition(190, 441);
+        content.addImage(ind);
+
+
+        // AGGIUNGE IL PUNTO ROSSO SULLA MAPPA
+        Rectangle rect = new Rectangle(240,240,250,250);
+        PdfAnnotation annotation = PdfAnnotation.createSquareCircle(stamper.getWriter(),rect,"Circle",false);
+        annotation.setColor(BaseColor.RED);
+        annotation.put(PdfName.IC,new PdfArray(new int[]{1,0,0}));
+        stamper.addAnnotation(annotation,1);
+
+        // AGGIUNGI IL TESTO
+        ColumnText.showTextAligned(content,Element.ALIGN_LEFT,new Phrase(mine),210,783,0);
+
+
+        ColumnText.showTextAligned(content,Element.ALIGN_LEFT,new Phrase("Low"),120,630,0);
+        stamper.close();
+
 
         document.close();
 
@@ -375,17 +491,19 @@ public class MainActivity extends ListActivity {
             }
         }
 
+
+        String finale = pdfFolder.getAbsolutePath() + "/" + filename.substring(0,filename.lastIndexOf('.'))+"a.pdf";
+        File report_finale = new File(finale);
+
+        report.delete();
+        
+
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(report), "application/pdf");
+        intent.setDataAndType(Uri.fromFile(report_finale), "application/pdf");
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
 
-        /*Intent shareIntent = new Intent();
-        shareIntent.setAction(Intent.ACTION_SEND);
-        Uri uri = Uri.fromFile(report);
-        shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
-        shareIntent.setType("application/pdf");
-        startActivity(Intent.createChooser(shareIntent, "Share the report"));*/
+
 
 
     }
@@ -472,20 +590,28 @@ public class MainActivity extends ListActivity {
 
         document.add(new Paragraph("Luca"));
 
-        BaseFont bf = BaseFont.createFont(BaseFont.COURIER, BaseFont.CP1257, BaseFont.EMBEDDED);
+        /*BaseFont bf = BaseFont.createFont(BaseFont.COURIER, BaseFont.CP1257, BaseFont.EMBEDDED);
         cb.saveState();
         cb.beginText();
         cb.moveText(100, 100);
         cb.setFontAndSize(bf, 12);
         cb.showText("Luca");
         cb.endText();
-        cb.restoreState();
+        cb.restoreState();*/
 
 
-        String path_img1 = pdfFolder.getAbsolutePath() + "/" + filename.substring(0,filename.lastIndexOf('.'))+ "_1.jpg";
+        String path_img1 = pdfFolder.getAbsolutePath() + "/" + filename.substring(0,filename.lastIndexOf('.'))+ "_1.png";
+        Log.d("OpenRisk","Pdf IMG1"+ path_img1);
 
-        Image image = Image.getInstance(path_img1);
-        document.add(image);
+        File f = new File(percorso);
+        Bitmap bmp = BitmapFactory.decodeFile(f.getAbsolutePath());
+        ByteArrayOutputStream stream1 = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.PNG,100,stream1);
+        Image foto1 = Image.getInstance(stream1.toByteArray());
+        foto1.setAbsolutePosition(50,350);
+        foto1.scalePercent(50);
+        document.add(foto1);
+
 
         document.close();
 
@@ -498,6 +624,8 @@ public class MainActivity extends ListActivity {
             }
         }
 
+
+        report.delete();
 
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
@@ -569,4 +697,31 @@ public class MainActivity extends ListActivity {
                         });
                 builder.show();
             }
+
+
+    class MyTask extends AsyncTask<Integer, Integer, String> {
+        @Override
+        protected String doInBackground(Integer... params) {
+            try {
+                report();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (DocumentException e) {
+                e.printStackTrace();
+            }
+            return "Task Completed.";
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            spinner.setVisibility(View.GONE);
+        }
+        @Override
+        protected void onPreExecute() {
+            spinner.setVisibility(View.VISIBLE);
+        }
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+
+        }
+    }
 }
