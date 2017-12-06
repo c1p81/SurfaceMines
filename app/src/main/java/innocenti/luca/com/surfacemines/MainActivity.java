@@ -265,16 +265,9 @@ public class MainActivity extends ListActivity {
             Intent calcolo = new Intent(MainActivity.this,CalcoloActivity.class);
             startActivity(calcolo);
         }
-        else if(item.getTitle()=="Share"){
-            try {
-                try {
-                    report_share();
-                } catch (DocumentException e) {
-                    e.printStackTrace();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }        }
+        else if(item.getTitle()=="Share") {
+            new MyTaskShare().execute(1);
+        }
         else{
             return false;
         }
@@ -306,6 +299,214 @@ public class MainActivity extends ListActivity {
 
 
     private void report() throws FileNotFoundException,IOException, DocumentException {
+        File card = Environment.getExternalStorageDirectory();
+        File file = new File(Environment.getExternalStorageDirectory().getPath(), "OpenRisk");
+        String percorso2 = file.getAbsolutePath() + "/" +filename;
+        String uriStringjson = percorso2 ;
+
+        spinner.setVisibility(View.VISIBLE);
+
+
+
+        // LEGGE IL JSON
+        File dati = new File(uriStringjson);
+        FileInputStream stream = null;
+        stream = new FileInputStream(dati);
+        String jString = null;
+        try {
+            FileChannel fc = stream.getChannel();
+            MappedByteBuffer bb = null;
+            try {
+                bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            /* Instead of using default, pass in a decoder. */
+            jString = Charset.defaultCharset().decode(bb).toString();
+            Log.d("OpenRisk",jString);
+        }
+        finally {
+            try {
+                stream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // LEGGE IL CONTENUTO DEL FILE JSON
+        Log.d("OpenRisk","Lettura JSON");
+        JSONObject jObject = null;
+        try {
+            jObject = new JSONObject(jString);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            mine = jObject.getString("MINE");
+            stop = jObject.getString("STOP");
+            datetime = jObject.getString("DATETIME");
+            latj = jObject.getString("LAT");
+            lngj = jObject.getString("LNG");
+
+
+            //Log.d("OpenRisk","G11 : " + Integer.toString(g11));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        // GENERA IL PDF
+        File pdfFolder = new File(Environment.getExternalStorageDirectory().getPath(), "OpenRisk");
+        if (!pdfFolder.exists()) {
+            pdfFolder.mkdir();
+        }
+
+        String percorso = pdfFolder.getAbsolutePath() + "/" + filename.substring(0,filename.lastIndexOf('.'))+".pdf";
+        File report = new File(percorso);
+        FileOutputStream output = new FileOutputStream(percorso);
+
+
+        Document document = new Document(PageSize.A4);
+        PdfWriter writer =  PdfWriter.getInstance(document, output);
+        document.open();
+        PdfContentByte cb = writer.getDirectContent();
+
+        //prende il modello del report da /res/raw
+        PdfReader reader = new PdfReader(getResources().openRawResource(R.raw.report));
+        PdfImportedPage page = writer.getImportedPage(reader, 1);
+        document.newPage();
+        cb.addTemplate(page, 0, 0);
+
+
+        // AGGIUNGI LE IMMAGINI
+
+        // DIMENSIONI DI UN FOGLIO A4 595 x 842
+
+
+        String path_img1 = pdfFolder.getAbsolutePath() + "/" + filename.substring(0,filename.lastIndexOf('.'))+ "_1.png";
+        String path_img2 = pdfFolder.getAbsolutePath() + "/" + filename.substring(0,filename.lastIndexOf('.'))+ "_2.png";
+        String path_img3 = pdfFolder.getAbsolutePath() + "/" + filename.substring(0,filename.lastIndexOf('.'))+ "_3.png";
+
+        Log.d("OpenRisk","Pdf IMG1 Report  "+ path_img1);
+
+
+        PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(pdfFolder.getAbsolutePath() + "/" + filename.substring(0,filename.lastIndexOf('.'))+"a.pdf"),PdfWriter.VERSION_1_7);
+        stamper.setRotateContents(false);
+        // ABILITA LA COMPRESSIONE DEL PDF
+        stamper.setFullCompression();
+        PdfContentByte content = stamper.getOverContent(1);
+
+        File f = new File(path_img1);
+        if (f.exists()) {
+            Bitmap bmp = BitmapFactory.decodeFile(f.getAbsolutePath());
+            ByteArrayOutputStream stream3 = new ByteArrayOutputStream();
+            bmp.compress(Bitmap.CompressFormat.PNG, 50, stream3);
+            Image img1 = Image.getInstance(stream3.toByteArray());
+            //img1.scaleAbsoluteHeight(100);
+            //img1.scaleAbsoluteWidth(100);
+            img1.scalePercent(50);
+            img1.setAbsolutePosition(50, 20);
+            content.addImage(img1);
+        }
+
+        File f2 = new File(path_img2);
+        if (f2.exists()) {
+            Bitmap bmp2 = BitmapFactory.decodeFile(f2.getAbsolutePath());
+            ByteArrayOutputStream stream4 = new ByteArrayOutputStream();
+            bmp2.compress(Bitmap.CompressFormat.PNG, 50, stream4);
+            Image img2 = Image.getInstance(stream4.toByteArray());
+            //img2.scaleAbsoluteHeight(100);
+            //img2.scaleAbsoluteWidth(100);
+            img2.scalePercent(50);
+            img2.setAbsolutePosition(250, 20);
+            content.addImage(img2);
+
+        }
+
+
+        File f3 = new File(path_img3);
+        if (f3.exists()) {
+            Bitmap bmp3 = BitmapFactory.decodeFile(f3.getAbsolutePath());
+            ByteArrayOutputStream stream5 = new ByteArrayOutputStream();
+            bmp3.compress(Bitmap.CompressFormat.PNG, 50, stream5);
+            Image img3 = Image.getInstance(stream5.toByteArray());
+            //img3.scaleAbsoluteHeight(100);
+            //img3.scaleAbsoluteWidth(100);
+            img3.scalePercent(50);
+            img3.setAbsolutePosition(450, 20);
+            content.addImage(img3);
+        }
+
+        Bitmap mappa = BitmapFactory.decodeResource(getBaseContext().getResources(),R.drawable.mappa);
+        ByteArrayOutputStream stream7 = new ByteArrayOutputStream();
+
+        mappa.compress(Bitmap.CompressFormat.PNG,50,stream7);
+        Image map = Image.getInstance(stream7.toByteArray());
+        //ind.scaleAbsoluteHeight(70);
+        //ind.scaleAbsoluteWidth(100);
+        map.scalePercent(10);
+        map.setAbsolutePosition(150, 170);
+        content.addImage(map);
+
+        Bitmap indicatore = BitmapFactory.decodeResource(getBaseContext().getResources(),R.drawable.indicatore_verde);
+        ByteArrayOutputStream stream6 = new ByteArrayOutputStream();
+
+        indicatore.compress(Bitmap.CompressFormat.PNG,100,stream6);
+        Image ind = Image.getInstance(stream6.toByteArray());
+        ind.scalePercent(9,9);
+        //ind.scaleAbsoluteHeight(70);
+        //ind.scaleAbsoluteWidth(100);
+        ind.setAbsolutePosition(190, 441);
+        content.addImage(ind);
+
+
+        // AGGIUNGE IL PUNTO ROSSO SULLA MAPPA
+        Rectangle rect = new Rectangle(240,240,250,250);
+        PdfAnnotation annotation = PdfAnnotation.createSquareCircle(stamper.getWriter(),rect,"Circle",false);
+        annotation.setColor(BaseColor.RED);
+        annotation.put(PdfName.IC,new PdfArray(new int[]{1,0,0}));
+        stamper.addAnnotation(annotation,1);
+
+        // AGGIUNGI IL TESTO
+        ColumnText.showTextAligned(content,Element.ALIGN_LEFT,new Phrase(mine),210,783,0);
+
+
+        ColumnText.showTextAligned(content,Element.ALIGN_LEFT,new Phrase("Low"),120,630,0);
+        stamper.close();
+
+
+        document.close();
+
+        if(Build.VERSION.SDK_INT>=24){
+            try{
+                Method m = StrictMode.class.getMethod("disableDeathOnFileUriExposure");
+                m.invoke(null);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+
+
+        String finale = pdfFolder.getAbsolutePath() + "/" + filename.substring(0,filename.lastIndexOf('.'))+"a.pdf";
+        File report_finale = new File(finale);
+
+        report.delete();
+
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.fromFile(report_finale), "application/pdf");
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(intent);
+
+
+
+
+    }
+
+
+
+    private void report_share() throws FileNotFoundException,IOException, DocumentException {
+
         File card = Environment.getExternalStorageDirectory();
         File file = new File(Environment.getExternalStorageDirectory().getPath(), "OpenRisk");
         String percorso2 = file.getAbsolutePath() + "/" +filename;
@@ -496,140 +697,10 @@ public class MainActivity extends ListActivity {
         File report_finale = new File(finale);
 
         report.delete();
-        
-
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(report_finale), "application/pdf");
-        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        startActivity(intent);
-
-
-
-
-    }
-
-
-
-    private void report_share() throws FileNotFoundException,IOException, DocumentException {
-        File card = Environment.getExternalStorageDirectory();
-        File file = new File(Environment.getExternalStorageDirectory().getPath(), "OpenRisk");
-        String percorso2 = file.getAbsolutePath() + "/" +filename;
-        String uriStringjson = percorso2 ;
-
-
-
-        // LEGGE IL JSON
-        File dati = new File(uriStringjson);
-        FileInputStream stream = null;
-        stream = new FileInputStream(dati);
-        String jString = null;
-        try {
-            FileChannel fc = stream.getChannel();
-            MappedByteBuffer bb = null;
-            try {
-                bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            /* Instead of using default, pass in a decoder. */
-            jString = Charset.defaultCharset().decode(bb).toString();
-            Log.d("OpenRisk",jString);
-        }
-        finally {
-            try {
-                stream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        // LEGGE IL CONTENUTO DEL FILE JSON
-        Log.d("OpenRisk","Lettura JSON");
-        JSONObject jObject = null;
-        try {
-            jObject = new JSONObject(jString);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        try {
-            int g11 = jObject.getInt("G11");
-            int g12 = jObject.getInt("G12");
-            int g13 = jObject.getInt("G13");
-            int g14 = jObject.getInt("G14");
-            int g15 = jObject.getInt("G15");
-
-
-            Log.d("OpenRisk","G11 : " + Integer.toString(g11));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-        // GENERA IL PDF
-        File pdfFolder = new File(Environment.getExternalStorageDirectory().getPath(), "OpenRisk");
-        if (!pdfFolder.exists()) {
-            pdfFolder.mkdir();
-        }
-
-        String percorso = pdfFolder.getAbsolutePath() + "/" + filename.substring(0,filename.lastIndexOf('.'))+ ".pdf";
-        File report = new File(percorso);
-        FileOutputStream output = new FileOutputStream(percorso);
-
-
-        Document document = new Document(PageSize.A4);
-        PdfWriter writer =  PdfWriter.getInstance(document, output);
-        document.open();
-        PdfContentByte cb = writer.getDirectContent();
-
-        //prende il modello del report da /res/raw
-        PdfReader reader = new PdfReader(getResources().openRawResource(R.raw.report));
-        PdfImportedPage page = writer.getImportedPage(reader, 1);
-        document.newPage();
-        cb.addTemplate(page, 0, 0);
-
-
-        document.add(new Paragraph("Luca"));
-
-        /*BaseFont bf = BaseFont.createFont(BaseFont.COURIER, BaseFont.CP1257, BaseFont.EMBEDDED);
-        cb.saveState();
-        cb.beginText();
-        cb.moveText(100, 100);
-        cb.setFontAndSize(bf, 12);
-        cb.showText("Luca");
-        cb.endText();
-        cb.restoreState();*/
-
-
-        String path_img1 = pdfFolder.getAbsolutePath() + "/" + filename.substring(0,filename.lastIndexOf('.'))+ "_1.png";
-        Log.d("OpenRisk","Pdf IMG1"+ path_img1);
-
-        File f = new File(percorso);
-        Bitmap bmp = BitmapFactory.decodeFile(f.getAbsolutePath());
-        ByteArrayOutputStream stream1 = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.PNG,100,stream1);
-        Image foto1 = Image.getInstance(stream1.toByteArray());
-        foto1.setAbsolutePosition(50,350);
-        foto1.scalePercent(50);
-        document.add(foto1);
-
-
-        document.close();
-
-        if(Build.VERSION.SDK_INT>=24){
-            try{
-                Method m = StrictMode.class.getMethod("disableDeathOnFileUriExposure");
-                m.invoke(null);
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-        }
-
-
-        report.delete();
 
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
-        Uri uri = Uri.fromFile(report);
+        Uri uri = Uri.fromFile(report_finale);
         shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
         shareIntent.setType("application/pdf");
         startActivity(Intent.createChooser(shareIntent, "Share the report"));
@@ -704,6 +775,32 @@ public class MainActivity extends ListActivity {
         protected String doInBackground(Integer... params) {
             try {
                 report();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (DocumentException e) {
+                e.printStackTrace();
+            }
+            return "Task Completed.";
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            spinner.setVisibility(View.GONE);
+        }
+        @Override
+        protected void onPreExecute() {
+            spinner.setVisibility(View.VISIBLE);
+        }
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+
+        }
+    }
+
+    class MyTaskShare extends AsyncTask<Integer, Integer, String> {
+        @Override
+        protected String doInBackground(Integer... params) {
+            try {
+                report_share();
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (DocumentException e) {
