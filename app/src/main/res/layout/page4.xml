@@ -8,7 +8,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
->
+        android:id="@+id/rl_Container"
+        >
 
 
         <com.jjoe64.graphview.GraphView
@@ -18,14 +19,14 @@
             android:layout_marginRight="10dp"
             android:id="@+id/graph" />
 
-        <TextView
-            android:id="@+id/textView2"
+        <EditText
+            android:id="@+id/overall_risk"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/graph"
             android:layout_centerHorizontal="true"
-            android:text="High Risk"
-
+            android:text="Risk"
+            android:inputType="textNoSuggestions"
             android:textSize="30sp"
             app:layout_constraintTop_toBottomOf="@+id/graph" />
 

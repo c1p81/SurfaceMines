@@ -1,5 +1,6 @@
 package innocenti.luca.com.surfacemines;
 
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
@@ -9,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 
 import com.jjoe64.graphview.GraphView;
@@ -23,6 +25,8 @@ import java.text.Format;
 import java.text.ParsePosition;
 import java.util.Arrays;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * Created by lucainnocenti on 28/11/17.
  */
@@ -30,6 +34,15 @@ import java.util.Arrays;
 public class page4 extends Fragment
 {
     private View rootView;
+    private String risk;
+    private EditText rischio;
+
+    private float Pof_mining;
+    private float Con_mining;
+    private float Pof_geotech;
+    private float Con_geotech;
+    private float overall_Pof;
+    private float overall_Con;
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -39,7 +52,40 @@ public class page4 extends Fragment
 
     public void onViewCreated(View rootView, Bundle savedInstanceState) {
         super.onViewCreated(rootView, savedInstanceState);
+
         GraphView graph = (GraphView) rootView.findViewById(R.id.graph);
+        rischio = (EditText) rootView.findViewById(R.id.overall_risk);
+
+
+        // CALCOLA OVERALL
+        SharedPreferences prefs = this.getActivity().getSharedPreferences("variabili", MODE_PRIVATE);
+
+
+        Pof_mining = prefs.getFloat("Pof_mining",0);
+        Con_mining = prefs.getFloat("Con_mining",0);
+
+        Pof_geotech = prefs.getFloat("Pof_geotech",0);
+        Con_geotech = prefs.getFloat("Con_geotech",0);
+
+        overall_Pof = (Pof_geotech + Pof_mining) / 2;
+        overall_Con = (Con_geotech+Con_mining)/2;
+
+        if ((overall_Pof+(2.278*overall_Con)) < 1.23)
+        {
+            rischio.setText("Low");
+        }
+
+        if (((overall_Pof+(2.278*overall_Con)) >= 1.23) && ((overall_Pof+(2.278*overall_Con)) <1.55))
+        {
+            rischio.setText("Medium");
+        }
+
+        if ((overall_Pof+(2.278*overall_Con)) >= 1.55)
+        {
+            rischio.setText("High");
+        }
+
+
 
         graph.setTitle("Overall Risk");
         graph.setTitleTextSize(50);
@@ -53,19 +99,13 @@ public class page4 extends Fragment
         graph.getViewport().setMaxY(1.0);
 
         GridLabelRenderer gridLabel = graph.getGridLabelRenderer();
-        gridLabel.setHorizontalAxisTitle("Likelihood");
-        gridLabel.setVerticalAxisTitle("Severity");
+        gridLabel.setHorizontalAxisTitle("Pof");
+        gridLabel.setVerticalAxisTitle("Consequences");
         gridLabel.setHorizontalAxisTitleTextSize(10);
         graph.getGridLabelRenderer().setHorizontalAxisTitleTextSize(40);
         graph.getGridLabelRenderer().setVerticalAxisTitleTextSize(40);
         graph.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.BOTH);
         graph.getGridLabelRenderer().reloadStyles();
-
-
-
-
-
-
 
         LineGraphSeries<DataPoint> series0 = new LineGraphSeries<>(new DataPoint[] {
                 new DataPoint(0,0),
@@ -114,9 +154,9 @@ public class page4 extends Fragment
         series11.setBackgroundColor(Color.argb( 100, 255, 255, 0));
         graph.addSeries(series11);
 
-
+        //PLOTTA IL PUNTO
         PointsGraphSeries<DataPoint> series2 = new PointsGraphSeries<>(new DataPoint[] {
-                new DataPoint(0.5, 0.5),
+                new DataPoint(overall_Pof, overall_Con),
 
         });
         graph.addSeries(series2);

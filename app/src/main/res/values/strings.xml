@@ -8,7 +8,9 @@
     <string name="tab_text_2">Geotechnical Risk</string>
     <string name="tab_text_3">Photos</string>
     <string name="tab_text_4">Overall Risk</string>
+    <string name="tab_text_5">Map</string>
 
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_mappa">Map</string>
 </resources>

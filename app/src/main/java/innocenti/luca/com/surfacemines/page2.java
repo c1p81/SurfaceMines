@@ -641,34 +641,29 @@ public class page2 extends Fragment {
         Log.d("Photonotation", "Pof "+ Pof);
 
 
-
-        Double y_low  = (-2.27*Pof)+1.23;
-        Double y_high = (-2.38*Pof)+1.595;
-
-        if (Consequenses < y_low)
+        if ((Pof+(2.278*Consequenses)) < 1.23)
         {
-            risk = "Low Risk";
-            //rischio.setBackgroundColor(Color.parseColor("#00FF00"));
+            risk = "Good";
             speedometer.setSpeedAt(20);
-
-
-
         }
-        if ((Consequenses>= y_low) && (Consequenses< y_high))
+
+        if (((Pof+(2.278*Consequenses)) >= 1.23) && ((Pof+(2.278*Consequenses)) <1.55))
         {
-            risk = "Medium Risk";
-            //rischio.setBackgroundColor(Color.parseColor("#FFFF00"));
+            risk = "Moderate";
             speedometer.setSpeedAt(50);
-
-
         }
-        if (Consequenses >= y_high)
+
+        if ((Pof+(2.278*Consequenses)) >= 1.55)
         {
-            risk = "High Risk";
-            //rischio.setBackgroundColor(Color.parseColor("#FF0000"));
+            risk = "Poor";
             speedometer.setSpeedAt(80);
-
         }
+
+        editor.putFloat("Pof_geotech", (float) Pof);
+        editor.putFloat("Con_geotech", (float) Consequenses);
+
+
+
         editor.putString("risk2", risk);
         editor.commit();
     }

@@ -843,40 +843,32 @@ public class page1 extends Fragment implements LocationListener{
 
         Log.d("Photonotation", "Pof "+ Pof);
 
-
-
-        Double y_low  = (-2.27*Pof)+1.23;
-        Double y_high = (-2.38*Pof)+1.595;
-
-        if (Consequenses < y_low)
+        if ((Pof+(2.278*Consequenses)) < 1.23)
         {
-            risk = "Low Risk";
+            risk = "Good";
             rischio.setBackgroundColor(Color.parseColor("#00FF00"));
             speedometer.setSpeedAt(20);
-
-
-
         }
-        if ((Consequenses>= y_low) && (Consequenses< y_high))
+
+        if (((Pof+(2.278*Consequenses)) >= 1.23) && ((Pof+(2.278*Consequenses)) <1.55))
         {
-            risk = "Medium Risk";
-            rischio.setBackgroundColor(Color.parseColor("#FFFF00"));
+            risk = "Moderate";
+            rischio.setBackgroundColor(Color.parseColor("#00FF00"));
             speedometer.setSpeedAt(50);
-
-
         }
-        if (Consequenses >= y_high)
+
+        if ((Pof+(2.278*Consequenses)) >= 1.55)
         {
-            risk = "High Risk";
-            rischio.setBackgroundColor(Color.parseColor("#FF0000"));
+            risk = "Poor";
+            rischio.setBackgroundColor(Color.parseColor("#00FF00"));
             speedometer.setSpeedAt(80);
-
-
         }
-        Log.d("Photonotation", risk);
-        rischio.setText(risk);
 
         editor.putString("risk1", risk);
+
+        editor.putFloat("Pof_mining", (float) Pof);
+        editor.putFloat("Con_mining", (float) Consequenses);
+
         editor.commit();
 
     }
@@ -916,7 +908,7 @@ public class page1 extends Fragment implements LocationListener{
     public void onLocationChanged(Location location) {
         lat = location.getLatitude();
         lng = location.getLongitude();
-        coordinatetxt.setText("A "+Double.toString(lng)+"/"+Double.toString(lat));
+        coordinatetxt.setText(" "+Double.toString(lng)+"/"+Double.toString(lat));
 
         Log.i("Location info: Lat", Double.toString(lat));
         Log.i("Location info: Lng", Double.toString(lng));

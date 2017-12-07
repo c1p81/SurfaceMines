@@ -3,12 +3,14 @@ package innocenti.luca.com.surfacemines;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -16,6 +18,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.provider.SyncStateContract;
 import android.support.design.widget.FloatingActionButton;
@@ -55,6 +58,7 @@ import com.itextpdf.text.pdf.PdfName;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.xmp.impl.Utils;
 import com.vistrav.ask.Ask;
 import com.vistrav.ask.annotations.AskDenied;
 import com.vistrav.ask.annotations.AskGranted;
@@ -70,6 +74,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
@@ -101,6 +106,9 @@ public class MainActivity extends ListActivity {
     private String mine,stop,datetime,latj,lngj;
     private ProgressBar spinner;
 
+    private static final int TIME_INTERVAL = 2000; // # milliseconds, desired time passed between two back presses.
+    private long mBackPressed;
+    private boolean doubleBackToExitPressedOnce;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +117,8 @@ public class MainActivity extends ListActivity {
 
         spinner = (ProgressBar)findViewById(R.id.progressBar1);
         spinner.setVisibility(View.GONE);
+
+        //copyAssets();
 
 
         Ask.on(this)
@@ -370,9 +380,16 @@ public class MainActivity extends ListActivity {
         PdfWriter writer =  PdfWriter.getInstance(document, output);
         document.open();
         PdfContentByte cb = writer.getDirectContent();
+        writer.setPdfVersion(PdfWriter.PDF_VERSION_1_5);
+
 
         //prende il modello del report da /res/raw
         PdfReader reader = new PdfReader(getResources().openRawResource(R.raw.report));
+        reader.removeFields();
+        reader.removeUnusedObjects();
+
+
+
         PdfImportedPage page = writer.getImportedPage(reader, 1);
         document.newPage();
         cb.addTemplate(page, 0, 0);
@@ -390,7 +407,7 @@ public class MainActivity extends ListActivity {
         Log.d("OpenRisk","Pdf IMG1 Report  "+ path_img1);
 
 
-        PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(pdfFolder.getAbsolutePath() + "/" + filename.substring(0,filename.lastIndexOf('.'))+"a.pdf"),PdfWriter.VERSION_1_7);
+        PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(pdfFolder.getAbsolutePath() + "/" + filename.substring(0,filename.lastIndexOf('.'))+"a.pdf"),PdfWriter.VERSION_1_5);
         stamper.setRotateContents(false);
         // ABILITA LA COMPRESSIONE DEL PDF
         stamper.setFullCompression();
@@ -472,6 +489,9 @@ public class MainActivity extends ListActivity {
 
 
         ColumnText.showTextAligned(content,Element.ALIGN_LEFT,new Phrase("Low"),120,630,0);
+        stamper.setFullCompression();
+
+        //writer.setFullCompression();
         stamper.close();
 
 
@@ -721,26 +741,39 @@ public class MainActivity extends ListActivity {
 
 
                 String fj = filename;
-                //String fj =  filename.substring(0,filename.lastIndexOf('.')) + ".json";
-                String fp1 =  filename.substring(0,filename.lastIndexOf('.')) + "_1.jpg";
-                String fp2 =  filename.substring(0,filename.lastIndexOf('.')) + "_2.jpg";
-                String fp3 =  filename.substring(0,filename.lastIndexOf('.')) + "_3.jpg";
-                Log.d("OpenRisk", "Nome file "+ fj + " " + fp1 );
+                Log.d("OpenRisk", "Cancella file :"+fj);
+                //fj =  filename.substring(0,filename.lastIndexOf('.')) + ".json";
+                String fp1 =  filename.substring(0,filename.lastIndexOf('.')) + "_1.png";
+                String fp2 =  filename.substring(0,filename.lastIndexOf('.')) + "_2.png";
+                String fp3 =  filename.substring(0,filename.lastIndexOf('.')) + "_3.png";
+                String pdf =  filename.substring(0,filename.lastIndexOf('.')) + "a.pdf";
+
+
+        Log.d("OpenRisk", "Nome file  FP1 "+ fp1 );
 
                 if (path.endsWith(File.separator)) {
                     fj = path + fj;
                     fp1 = path + fp1;
+                    fp2 = path + fp2;
+                    fp3 = path + fp3;
+                    pdf = path + pdf;
+
                 } else {
                     fj = path + File.separator + fj;
                     fp1 = path + File.separator + fp1;
-                    fp2 = path + File.separator + fp1;
-                    fp3 = path + File.separator + fp1;
+                    fp2 = path + File.separator + fp2;
+                    pdf = path + File.separator + pdf;
+
+
                 }
+
+                Log.d("OpenRisk", "Nome file  FP1 "+ fp1 );
 
                 file_json = new File(fj);
                 file_jpg_1 = new File (fp1);
                 file_jpg_2 = new File(fp2);
                 file_jpg_3 = new File (fp3);
+                final File file_pdf = new File(pdf);
 
                 Log.d("filemanager", fj);
                 Log.d("filemanager", fp1);
@@ -755,6 +788,7 @@ public class MainActivity extends ListActivity {
                                 file_jpg_1.delete();
                                 file_jpg_2.delete();
                                 file_jpg_3.delete();
+                                file_pdf.delete();
 
                                 refresh_list();
                             }
@@ -821,4 +855,79 @@ public class MainActivity extends ListActivity {
 
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce=false;
+            }
+        }, 2000);
+    }
+
+    //------------- COPY ASSETS TO SD
+
+    private void copyAssets() {
+        Log.d("OpenRisk","ASSETS");
+        AssetManager assetManager = getAssets();
+        String[] files = null;
+        try {
+            files = assetManager.list("");
+        } catch (IOException e) {
+            Log.e("tag", "Failed to get asset file list.", e);
+        }
+        if (files != null) for (String filename : files) {
+            InputStream in = null;
+            OutputStream out = null;
+            try {
+                in = assetManager.open(filename);
+                card = Environment.getExternalStorageDirectory();
+                File file = new File(Environment.getExternalStorageDirectory().getPath(), "OpenRisk/data/");
+                if (!file.exists()) {
+                    file.mkdirs();
+                }
+                File outFile = new File(file , filename);
+                Log.d("OpenRisk", "Assets " +outFile);
+                out = new FileOutputStream(outFile);
+                copyFile(in, out);
+            } catch(IOException e) {
+                Log.e("tag", "Failed to copy asset file: " + filename, e);
+            }
+            finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        // NOOP
+                    }
+                }
+                if (out != null) {
+                    try {
+                        out.close();
+                    } catch (IOException e) {
+                        // NOOP
+                    }
+                }
+            }
+        }
+    }
+    private void copyFile(InputStream in, OutputStream out) throws IOException {
+        byte[] buffer = new byte[1024];
+        int read;
+        while((read = in.read(buffer)) != -1){
+            out.write(buffer, 0, read);
+        }
+    }
+    // ------------------------
+ 
 }
