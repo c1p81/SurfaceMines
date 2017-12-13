@@ -78,7 +78,7 @@ public class CalcoloActivity extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        mViewPager.setOffscreenPageLimit(4);
+        mViewPager.setOffscreenPageLimit(5);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
 
@@ -260,14 +260,11 @@ public class CalcoloActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent settings = new Intent(CalcoloActivity.this,SettingsActivity.class);
+            startActivity(settings);
             return true;
         }
 
-        if (id == R.id.action_map) {
-            Intent mappa = new Intent(CalcoloActivity.this,MapsActivity.class);
-            startActivity(mappa);
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -307,6 +304,10 @@ public class CalcoloActivity extends AppCompatActivity {
                     page4 page4 = new page4();
                     Log.d("OpenRisk","Pagina  4");
                     return page4;
+                case 4:
+                    page5 page5 = new page5();
+                    Log.d("OpenRisk","Pagina  5");
+                    return page5;
                 default:
                     return null;
             }
@@ -315,7 +316,7 @@ public class CalcoloActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 4;
+            return 5;
         }
     }
 }

@@ -119,6 +119,11 @@ public class MainActivity extends ListActivity {
         spinner.setVisibility(View.GONE);
 
         //copyAssets();
+        try {
+            copyPDFToExternal();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
         Ask.on(this)
@@ -929,5 +934,36 @@ public class MainActivity extends ListActivity {
         }
     }
     // ------------------------
+
+    // -------------------------
+    // COPY FROM RAW TO SD
+
+    public void copyPDFToExternal() throws IOException {
+        // Create directory folder if it doesnt exist.
+        File folder = new File(Environment.getExternalStorageDirectory() +
+                File.separator + "OpenRisk/Report_template/");
+        if (!folder.exists()){
+            folder.mkdir();
+        }
+
+        // Copy template
+        InputStream in = getResources().openRawResource(R.raw.report);
+        FileOutputStream out = new FileOutputStream(Environment.getExternalStorageDirectory() +
+                File.separator + "OpenRisk/Report_template/report_template.pdf");
+
+        byte[] buff = new byte[1024];
+        int read = 0;
+        try {
+            while ((read = in.read(buff)) > 0 ) {
+                out.write(buff, 0, read);
+            }
+        } finally {
+            in.close();
+            out.close();
+        }
+
+    }
+
+    // -------------------------
  
 }

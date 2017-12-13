@@ -26,7 +26,8 @@
             android:layout_below="@+id/graph"
             android:layout_centerHorizontal="true"
             android:text="Risk"
-            android:inputType="textNoSuggestions"
+            android:focusable="false"
+            android:inputType="none"
             android:textSize="30sp"
             app:layout_constraintTop_toBottomOf="@+id/graph" />
 

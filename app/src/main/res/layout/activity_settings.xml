@@ -1,0 +1,61 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/technician"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Geotechnical Technician"
+            android:textSize="18sp" />
+
+
+    <EditText
+        android:id="@+id/txttechnician"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name"
+        app:layout_constraintTop_toBottomOf="@+id/technician" />
+
+
+        <TextView
+            android:id="@+id/engineer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Geotechnical Engineer"
+            app:layout_constraintTop_toBottomOf="@+id/txttechnician"
+            android:textSize="18sp" />
+
+
+        <EditText
+            android:id="@+id/txtengineer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Name"
+            app:layout_constraintTop_toBottomOf="@+id/engineer" />
+
+        <Button
+            android:id="@+id/savesettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/txtengineer"
+            android:text="Save" />
+
+
+    </android.support.constraint.ConstraintLayout>
+
+
+</ScrollView>
+
