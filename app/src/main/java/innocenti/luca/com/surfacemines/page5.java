@@ -4,6 +4,8 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -23,6 +25,11 @@ import com.google.android.gms.maps.model.TileOverlayOptions;
 
 import android.util.Log;
 
+import java.io.File;
+import java.io.FileOutputStream;
+
+import github.nisrulz.screenshott.ScreenShott;
+
 
 public class page5 extends SupportMapFragment implements OnMapReadyCallback {
 
@@ -31,6 +38,8 @@ public class page5 extends SupportMapFragment implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     LatLng punto = new LatLng(43.83333, 11.33333);
+
+
 
 
     @Override
@@ -78,6 +87,38 @@ public class page5 extends SupportMapFragment implements OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(punto, 7));
 
         mMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                Log.d("OpenRisk", "Click sulla mappa");
+                CaptureMapScreen();
+
+
+            }
+        });
+
+    }
+
+    public void CaptureMapScreen()
+    {
+        GoogleMap.SnapshotReadyCallback callback = new GoogleMap.SnapshotReadyCallback() {
+            Bitmap bitmap;
+
+            @Override
+            public void onSnapshotReady(Bitmap snapshot) {
+                // TODO Auto-generated method stub
+                bitmap = snapshot;
+                try {
+                    FileOutputStream out = new FileOutputStream("/mnt/sdcard/" + "MyMapScreen" + System.currentTimeMillis() + ".png");
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        mMap.snapshot(callback);
     }
 }
 
