@@ -910,6 +910,15 @@ public class page1 extends Fragment implements LocationListener{
         lng = location.getLongitude();
         coordinatetxt.setText(" "+Double.toString(lng)+"/"+Double.toString(lat));
 
+        SharedPreferences  sharedPref =  this.getActivity().getSharedPreferences("variabili",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("Lat", locationtxt.getText().toString());
+        editor.putString("Lng", stoptxt.getText().toString());
+
+        editor.commit();
+
+
+
         Log.i("Location info: Lat", Double.toString(lat));
         Log.i("Location info: Lng", Double.toString(lng));
     }

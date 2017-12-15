@@ -38,7 +38,6 @@ dependencies {
     compile 'com.github.anastr:speedviewlib:1.1.6'
     compile 'com.itextpdf:itextg:5.5.10'
     compile 'com.jjoe64:graphview:4.2.1'
-    compile 'com.github.nisrulz:screenshott:2.0.0'
 
 
 
