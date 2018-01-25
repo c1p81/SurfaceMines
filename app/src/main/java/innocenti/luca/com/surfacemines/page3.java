@@ -4,15 +4,21 @@ package innocenti.luca.com.surfacemines;
  * Created by lucainnocenti on 20/11/17.
  */
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,15 +27,11 @@ import android.widget.ImageView;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import innocenti.luca.com.surfacemines.variabili;
 
 import static android.content.Context.MODE_PRIVATE;
-import static java.lang.System.out;
+import static android.content.Context.SENSOR_SERVICE;
 
-public class page3 extends Fragment {
+public class page3 extends Fragment implements  SensorEventListener{
 
     private ImageView foto1;
     private ImageView foto2;
@@ -43,7 +45,7 @@ public class page3 extends Fragment {
     private Bitmap bm2;
     private Bitmap bm3;
 
-
+    private SensorManager mSensorManager;
 
     private View rootView;
 
@@ -51,12 +53,43 @@ public class page3 extends Fragment {
     private static final int CAMERA_REQUEST2 = 1888;
     private static final int CAMERA_REQUEST3 = 1889;
     private File card;
+    private SensorManager sensorManager;
+
+    private float azimut;
+    private Sensor sensor;
+    private SensorManager sensorService;
+    private int rate;
+    private Sensor mAccelerometer;
+    private Sensor mMagnetometer;
+    private final float[] mAccelerometerReading = new float[3];
+    private final float[] mMagnetometerReading = new float[3];
+
+    private final float[] mRotationMatrix = new float[9];
+    private final float[] mOrientationAngles = new float[3];
+
+    private double az;
+    private double pi;
+    private double ro;
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mSensorManager =(SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        
+        mMagnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
+
+    }
+
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.page3, container, false);
 
+        rootView = inflater.inflate(R.layout.page3, container, false);
 
         return rootView;
     }
@@ -162,6 +195,7 @@ public class page3 extends Fragment {
         String uriStringjpeg = percorso;
 
         if (requestCode== CAMERA_REQUEST1 && resultCode == Activity.RESULT_OK){
+
             ff1 = (Bitmap) data.getExtras().get("data");
             foto1.setImageBitmap(ff1);
             foto1.setImageURI(data.getData());
@@ -213,7 +247,7 @@ public class page3 extends Fragment {
             ff3 = (Bitmap) data.getExtras().get("data");
             foto3.setImageBitmap(ff3);
             foto3.setImageURI(data.getData());
-            bm3=((BitmapDrawable)foto1.getDrawable()).getBitmap();
+            bm3=((BitmapDrawable)foto3.getDrawable()).getBitmap();
             FileOutputStream out3 = null;
             try {
                 out3 = new FileOutputStream(uriStringjpeg + "_3"+".png");
@@ -233,4 +267,52 @@ public class page3 extends Fragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(this, mMagnetometer, SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
+
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        if (sensorEvent.sensor == mAccelerometer) {
+            System.arraycopy(sensorEvent.values, 0, mAccelerometerReading, 0, mAccelerometerReading.length);
+        }
+
+        if  (sensorEvent.sensor == mMagnetometer) {
+            System.arraycopy(sensorEvent.values, 0, mMagnetometerReading, 0, mMagnetometerReading.length);
+        }
+        updateOrientationAngles();
+
+    }
+
+    private void updateOrientationAngles() {
+        mSensorManager.getRotationMatrix(mRotationMatrix, null, mAccelerometerReading, mMagnetometerReading);
+        mSensorManager.getOrientation(mRotationMatrix, mOrientationAngles);
+
+        az = (mOrientationAngles[0]+(2*Math.PI))%(2*Math.PI);
+        pi = mOrientationAngles[1];
+        ro = mOrientationAngles[2];
+
+        Log.d("bussola", Double.toString(Math.toDegrees(az)));
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
+    }
 }
